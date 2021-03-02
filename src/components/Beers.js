@@ -1,37 +1,47 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Header from './Header';
-import axios from 'axios'
+import axios from 'axios';
 
 class Beers extends Component {
-    state = {
-        beers : []
-    }
+  state = {
+    beers: [],
+  };
 
-    componentDidMount () {
-        axios.get('https://ih-beers-api2.herokuapp.com/beers')
-        .then((response) => {
-            let beers = {
-                image: response.data.image,
-                name: response.data.name,
-                tagline: response.data.tagline,
-                contributed_by: response.data.contributed_by
-            }
+  componentDidMount() {
+    axios
+      .get('https://ih-beers-api2.herokuapp.com/beers')
+      .then((response) => {
+        console.log(response);
+        console.log('data was fetched');
+        this.setState({
+          beers: response.data,
+        });
+      })
+      .catch((err) => {
+        console.log('error', err);
+      });
+  }
 
-            this.setState({
-                beers:response.data
-            })
-            console.log(response.data)
-        })
-    }
-    render() {
-        return (
+  render() {
+    const { beers } = this.state;
+    console.log('Render happened');
+    return (
+      <div>
+        <Header />
+        {beers.map((singleBeer, index) => {
+          return (
             <div>
-            <Header/>
-                
+              <img src={singleBeer.image_url} height='120px' />
+              <h3> {singleBeer.name} </h3>
+              <h4> {singleBeer.tagline} </h4>
+              <h5> <b>Created by </b> {singleBeer.contributed_by} </h5>
             </div>
-        )
-    }
+          );
+        })}
+      </div>
+    );
+  }
 }
 
-export default Beers
+export default Beers;
